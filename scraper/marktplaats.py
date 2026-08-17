@@ -1,5 +1,7 @@
 import os
+import random
 import statistics
+import time
 from collections import Counter
 from datetime import datetime, timezone
 
@@ -97,19 +99,44 @@ def _parse_listing(raw: dict, keyword: str) -> dict | None:
     }
 
 
-def scrape_marktplaats(keyword: str, limit: int = 30, timeout: float = 8.0) -> list[dict]:
-    params = {
-        "query": keyword,
-        "limit": limit,
-        "offset": 0,
-        "searchInTitleAndDescription": "true",
-    }
-    response = httpx.get(SEARCH_URL, params=params, headers=HEADERS, timeout=timeout)
-    response.raise_for_status()
-    data = response.json()
+def scrape_marktplaats(keyword: str, limit: int = 30, timeout: float = 8.0, pages: int = 1) -> list[dict]:
+    """Fetch up to `pages` pages of `limit` results each.
 
-    listings = [_parse_listing(raw, keyword) for raw in data.get("listings", [])]
-    return [listing for listing in listings if listing is not None]
+    `pages=1` (the default) is used for the live-search fallback, which has an 8s budget
+    to stay responsive for the person waiting on it. The scheduled scraper passes a higher
+    `pages` explicitly, since it runs in the background with no such time pressure.
+    """
+    all_listings: list[dict] = []
+    seen_ids: set[str] = set()
+
+    for page in range(pages):
+        params = {
+            "query": keyword,
+            "limit": limit,
+            "offset": page * limit,
+            "searchInTitleAndDescription": "true",
+        }
+        response = httpx.get(SEARCH_URL, params=params, headers=HEADERS, timeout=timeout)
+        response.raise_for_status()
+        data = response.json()
+
+        raw_listings = data.get("listings", [])
+        for raw in raw_listings:
+            listing = _parse_listing(raw, keyword)
+            # Marktplaats' result ordering can shift slightly between separate paginated
+            # requests, occasionally surfacing the same item on two "pages" - dedupe rather
+            # than risk a duplicate marktplaats_id within the same upsert batch.
+            if listing is not None and listing["marktplaats_id"] not in seen_ids:
+                seen_ids.add(listing["marktplaats_id"])
+                all_listings.append(listing)
+
+        if len(raw_listings) < limit:
+            break  # reached the end of Marktplaats' results for this keyword
+
+        if page < pages - 1:
+            time.sleep(random.uniform(2, 3))
+
+    return all_listings
 
 
 def _median(values: list[float]) -> float | None:

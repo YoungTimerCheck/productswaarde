@@ -38,7 +38,7 @@ def run(keywords: list[str]) -> None:
     for i, keyword in enumerate(keywords):
         print(f"Scraping '{keyword}'...")
         try:
-            listings = scrape_marktplaats(keyword)
+            listings = scrape_marktplaats(keyword, pages=3)
             result = store_listings(keyword, listings)
             print(
                 f"  fetched {result['fetched']} | "
