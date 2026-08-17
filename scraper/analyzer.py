@@ -7,6 +7,7 @@ TOP_LEVEL_CATEGORIES = {
     "antiek-en-kunst": "Antiek en Kunst",
     "audio-tv-en-foto": "Audio, Tv en Foto",
     "auto-kopen": "Auto's",
+    "auto-s": "Auto's",  # actual listing-permalink slug; "auto-kopen" is only used by the nav widget
     "auto-onderdelen": "Auto-onderdelen",
     "auto-diversen": "Auto diversen",
     "boeken": "Boeken",
