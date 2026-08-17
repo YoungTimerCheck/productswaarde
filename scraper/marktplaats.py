@@ -126,6 +126,18 @@ def _percentile(sorted_values: list[float], pct: float) -> float | None:
     return sorted_values[f] + (sorted_values[c] - sorted_values[f]) * (k - f)
 
 
+def dominant_category(rows: list[dict]) -> str | None:
+    """Most common `category` (leaf categoryId) among the given listing rows.
+
+    Marktplaats injects sponsored ads / loosely-matched items from unrelated (sub)categories
+    into every search (e.g. a phone case or Joy-Con controller showing up under "iphone 13" /
+    "nintendo switch"). Only the dominant leaf category's listings represent the actual product
+    being searched for — used to filter both display listings and stats to just those.
+    """
+    categories = [r["category"] for r in rows if r.get("category")]
+    return Counter(categories).most_common(1)[0][0] if categories else None
+
+
 def _recalculate_keyword_stats(keyword: str) -> None:
     rows = (
         supabase.table("listings")
@@ -135,19 +147,13 @@ def _recalculate_keyword_stats(keyword: str) -> None:
         .data
     )
 
-    # Marktplaats injects sponsored ads / loosely-matched items from unrelated (sub)categories
-    # into every search (e.g. a phone case or Joy-Con controller showing up under "iphone 13" /
-    # "nintendo switch"). Only the dominant leaf category's listings represent the actual
-    # product being searched for, so median/avg are computed from those alone.
     active_rows = [r for r in rows if r["status"] == "active"]
-    dominant_category = (
-        Counter(r["category"] for r in active_rows).most_common(1)[0][0] if active_rows else None
-    )
+    dominant = dominant_category(active_rows)
 
     # Exclude price <= 0: open "FAST_BID" auctions report priceCents=0 (no minimum bid set),
     # which isn't a real price signal and would drag the median down artificially.
     active_prices = sorted(
-        r["price"] for r in active_rows if r["price"] and r["category"] == dominant_category
+        r["price"] for r in active_rows if r["price"] and r["category"] == dominant
     )
 
     supabase.table("keyword_stats").upsert(

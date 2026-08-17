@@ -1,12 +1,11 @@
 import statistics
-from collections import Counter
 from datetime import datetime, timedelta, timezone
 
 import httpx
 from fastapi import APIRouter, Query
 
 from scraper.analyzer import analyze_listing
-from scraper.marktplaats import scrape_marktplaats, store_listings, supabase
+from scraper.marktplaats import dominant_category, scrape_marktplaats, store_listings, supabase
 
 router = APIRouter()
 
@@ -32,12 +31,17 @@ def search(q: str = Query(..., min_length=1)):
             .execute()
             .data
         )
+        # Same dominant-category filter used for keyword_stats/deals: off-topic
+        # accessories shouldn't appear in the results grid at all, not just lose their badge.
+        dominant = dominant_category(listings)
+        on_topic_listings = [listing for listing in listings if listing["category"] == dominant] if dominant else listings
+
         median = stats_row[0]["median_price"]
         return {
             "source": "database",
             "keyword": keyword,
             "stats": stats_row[0],
-            "listings": [analyze_listing(listing, median) for listing in listings],
+            "listings": [analyze_listing(listing, median) for listing in on_topic_listings],
         }
 
     # PATH B: unknown keyword -> live scrape, timeboxed to 8 seconds.
@@ -55,13 +59,16 @@ def search(q: str = Query(..., min_length=1)):
         on_conflict="keyword",
     ).execute()
 
-    live_prices = [listing["price"] for listing in raw_listings if listing["price"]]
+    dominant = dominant_category(raw_listings)
+    on_topic_listings = [listing for listing in raw_listings if listing["category"] == dominant] if dominant else raw_listings
+
+    live_prices = [listing["price"] for listing in on_topic_listings if listing["price"]]
     live_median = statistics.median(live_prices) if live_prices else None
 
     return {
         "source": "live",
         "keyword": keyword,
-        "listings": [analyze_listing(listing, live_median) for listing in raw_listings],
+        "listings": [analyze_listing(listing, live_median) for listing in on_topic_listings],
     }
 
 
@@ -77,11 +84,11 @@ def deals(limit: int = 20):
     # keyword they don't belong to (e.g. a phone case or Joy-Con controller under "iphone 13" /
     # "nintendo switch"); comparing their price against that keyword's median produces nonsense
     # deal scores, so only the dominant leaf category per keyword is eligible for "best deals".
-    categories_by_keyword: dict[str, Counter] = {}
+    listings_by_keyword: dict[str, list[dict]] = {}
     for listing in active_listings:
-        categories_by_keyword.setdefault(listing["keyword"], Counter())[listing["category"]] += 1
+        listings_by_keyword.setdefault(listing["keyword"], []).append(listing)
     dominant_category_by_keyword = {
-        keyword: counter.most_common(1)[0][0] for keyword, counter in categories_by_keyword.items()
+        keyword: dominant_category(rows) for keyword, rows in listings_by_keyword.items()
     }
 
     best_deals = []
