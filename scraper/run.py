@@ -14,6 +14,12 @@ DEFAULT_KEYWORDS = [
     "elektrische fiets", "racefiets", "laptop",
     "canon camera", "sony camera", "airpods",
     "ipad", "dyson stofzuiger", "espressomachine",
+    # Top ~20 car brands (Netherlands market) - curated coverage for the "Auto's" category,
+    # rather than relying on whatever one-off model/engine-variant a customer happens to search.
+    "volkswagen", "opel", "peugeot", "renault", "toyota",
+    "ford", "kia", "hyundai", "skoda", "bmw",
+    "audi", "mercedes-benz", "citroen", "volvo", "nissan",
+    "fiat", "mazda", "seat", "mini", "dacia",
 ]
 
 

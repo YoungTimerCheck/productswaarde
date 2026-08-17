@@ -4,16 +4,22 @@ from fastapi import APIRouter
 
 from scraper.analyzer import translate_category
 from scraper.marktplaats import supabase
+from scraper.run import DEFAULT_KEYWORDS
 
 router = APIRouter()
 
 
 @router.get("/api/categories")
 def list_categories():
+    # Only aggregate curated/tracked keywords, not every one-off organic or test search -
+    # keeps category browse pages showing intentional coverage (e.g. car brands) rather than
+    # whatever hyper-specific term a customer happened to search once (still fully visible via
+    # direct search on results.html, just not surfaced on the curated category pages).
     rows = (
         supabase.table("listings")
         .select("url, keyword")
         .eq("status", "active")
+        .in_("keyword", DEFAULT_KEYWORDS)
         .execute()
         .data
     )
