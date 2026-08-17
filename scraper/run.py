@@ -20,6 +20,25 @@ DEFAULT_KEYWORDS = [
     "ford", "kia", "hyundai", "skoda", "bmw",
     "audi", "mercedes-benz", "citroen", "volvo", "nissan",
     "fiat", "mazda", "seat", "mini", "dacia",
+    # Meubels - previously had zero curated coverage.
+    "bank", "eettafel", "bureau", "boekenkast",
+    "kledingkast", "salontafel", "ledikant", "dressoir",
+    # Kleding - previously had zero curated coverage; clothing/footwear on Marktplaats is
+    # searched by brand far more than by generic garment type.
+    "nike", "adidas", "zara", "north face",
+    "levi's", "carhartt", "ralph lauren", "uggs",
+    # Fietsen en Brommers - topping up from 2 keywords (elektrische fiets, racefiets).
+    "mountainbike", "stadsfiets", "gazelle", "batavus",
+    "vouwfiets", "kinderfiets",
+    # Audio, Tv en Foto - topping up from 3 (airpods, canon camera, sony camera).
+    "koptelefoon", "bluetooth speaker", "gopro",
+    "platenspeler", "nikon camera", "fujifilm camera",
+    # Witgoed en Apparatuur - topping up from 2 (dyson stofzuiger, espressomachine).
+    "wasmachine", "koelkast", "vaatwasser",
+    "airfryer", "magnetron", "droger",
+    # Computers en Software - topping up (laptop/macbook air already covered general laptops).
+    "computerscherm", "gaming laptop", "chromebook",
+    "dell laptop", "hp laptop",
 ]
 
 
