@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prijsalert instellen | Productswaarde</title>
+  <meta name="description" content="Ontvang een melding zodra er een Marktplaats-advertentie verschijnt onder jouw maximumprijs. Geen account nodig." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="static/style.css" />
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+
+  <header class="bg-white border-b border-gray-200">
+    <nav class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+      <a href="index.html" class="text-xl font-bold text-gray-900 shrink-0">
+        Products<span class="text-emerald-600">waarde</span>
+      </a>
+      <form id="search-form" class="hidden sm:flex flex-1 max-w-md">
+        <input
+          id="search-input"
+          type="text"
+          required
+          placeholder="Zoek een product..."
+          class="flex-1 rounded-l-lg border border-gray-200 px-4 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+        />
+        <button type="submit" class="rounded-r-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors">
+          Zoeken
+        </button>
+      </form>
+      <div class="flex items-center gap-4 sm:gap-6 text-sm font-medium text-gray-500 shrink-0">
+        <a href="deals.html" class="hover:text-emerald-600">Deals</a>
+        <a href="alerts.html" class="text-emerald-600">Prijsalert</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="flex-1 max-w-lg mx-auto px-4 sm:px-6 py-10 w-full">
+
+    <div class="text-center">
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900">🔔 Stel een prijsalert in</h1>
+      <p class="mt-2 text-gray-500 text-sm">
+        Ontvang een melding zodra er een advertentie verschijnt onder jouw maximumprijs.
+        Geen account nodig.
+      </p>
+    </div>
+
+    <div id="alert-form-card" class="mt-8 bg-white border border-gray-200 shadow-sm rounded-xl p-6">
+      <form id="alert-form" class="grid gap-4">
+        <div>
+          <label for="alert-keyword" class="block text-sm font-medium text-gray-700 mb-1">Zoekterm</label>
+          <input
+            id="alert-keyword"
+            type="text"
+            required
+            placeholder="Bijv. iphone 13 128gb"
+            class="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+          />
+        </div>
+
+        <div>
+          <label for="alert-max-price" class="block text-sm font-medium text-gray-700 mb-1">Maximumprijs</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">€</span>
+            <input
+              id="alert-max-price"
+              type="number"
+              min="1"
+              step="1"
+              required
+              placeholder="300"
+              class="w-full rounded-lg border border-gray-200 pl-8 pr-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="alert-email" class="block text-sm font-medium text-gray-700 mb-1">E-mailadres</label>
+          <input
+            id="alert-email"
+            type="email"
+            required
+            placeholder="naam@email.nl"
+            class="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+          />
+        </div>
+
+        <p id="alert-form-error" class="hidden text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg p-3"></p>
+
+        <button
+          id="alert-submit"
+          type="submit"
+          class="rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white hover:bg-emerald-700 transition-colors disabled:opacity-60"
+        >
+          Maak alert aan
+        </button>
+
+        <p class="text-xs text-gray-400 text-center">
+          Geen wachtwoord, geen account. Je kunt je op elk moment uitschrijven via de link in elke e-mail.
+        </p>
+      </form>
+    </div>
+
+    <div id="alert-result" class="hidden mt-8"></div>
+
+    <div class="mt-8 bg-white border border-gray-200 rounded-xl p-5">
+      <h2 class="text-sm font-semibold text-gray-900">Gratis vs Pro</h2>
+      <div class="mt-3 grid grid-cols-2 gap-4 text-sm">
+        <div>
+          <div class="font-medium text-gray-700">Gratis</div>
+          <ul class="mt-1 text-gray-500 space-y-1">
+            <li>Max 2 actieve alerts</li>
+            <li>Controle elke 4 uur</li>
+          </ul>
+        </div>
+        <div>
+          <div class="font-medium text-emerald-600">Pro — €2,99/maand</div>
+          <ul class="mt-1 text-gray-500 space-y-1">
+            <li>Onbeperkt alerts</li>
+            <li>Controle elk uur</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <p class="mt-6 text-xs text-gray-400 text-center">
+      Door een prijsalert aan te maken ga je akkoord met ons
+      <a href="privacy.html" class="text-emerald-600 hover:underline">privacybeleid</a>.
+      We gebruiken je e-mailadres uitsluitend om je op de hoogte te stellen van deze prijsalert.
+    </p>
+
+  </main>
+
+  <footer class="bg-white border-t border-gray-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
+      <p>&copy; 2026 Productswaarde.nl</p>
+      <div class="flex gap-6">
+        <a href="deals.html" class="hover:text-emerald-600">Deals</a>
+        <a href="alerts.html" class="hover:text-emerald-600">Prijsalert</a>
+        <a href="privacy.html" class="hover:text-emerald-600">Privacybeleid</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="static/app.js"></script>
+</body>
+</html>

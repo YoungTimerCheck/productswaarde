@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Categorie | Productswaarde</title>
+  <meta name="description" content="Wat zijn eerlijke prijzen op Marktplaats? Bekijk trends en actuele deals per categorie." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="static/style.css" />
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+
+  <header class="bg-white border-b border-gray-200">
+    <nav class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+      <a href="index.html" class="text-xl font-bold text-gray-900 shrink-0">
+        Products<span class="text-emerald-600">waarde</span>
+      </a>
+      <form id="search-form" class="hidden sm:flex flex-1 max-w-md">
+        <input
+          id="search-input"
+          type="text"
+          required
+          placeholder="Zoek een product..."
+          class="flex-1 rounded-l-lg border border-gray-200 px-4 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+        />
+        <button type="submit" class="rounded-r-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors">
+          Zoeken
+        </button>
+      </form>
+      <div class="flex items-center gap-4 sm:gap-6 text-sm font-medium text-gray-500 shrink-0">
+        <a href="deals.html" class="hover:text-emerald-600">Deals</a>
+        <a href="alerts.html" class="hover:text-emerald-600">Prijsalert</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="category-root" class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full">
+
+    <p id="category-loading" class="text-gray-500">🔍 Categorie wordt geladen...</p>
+
+    <p id="category-not-found" class="hidden bg-red-50 border border-red-200 text-red-600 rounded-xl p-4 text-sm">
+      Onbekende categorie. Ga terug naar de <a href="index.html" class="underline">homepage</a>.
+    </p>
+
+    <p id="category-error" class="hidden bg-red-50 border border-red-200 text-red-600 rounded-xl p-4 text-sm">
+      Categoriegegevens konden niet worden geladen. Probeer het later opnieuw.
+    </p>
+
+    <div id="category-content" class="hidden">
+
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 flex items-center gap-3">
+        <span id="category-icon" aria-hidden="true"></span>
+        <span id="category-name"></span>
+      </h1>
+
+      <div class="mt-6 grid sm:grid-cols-2 gap-4 max-w-lg">
+        <div class="bg-white border border-gray-200 shadow-sm rounded-xl p-5">
+          <div class="text-xs font-medium text-gray-500">Gevolgde advertenties</div>
+          <div id="category-active-count" class="mt-1 text-xl font-bold text-gray-900">–</div>
+        </div>
+        <div class="bg-white border border-gray-200 shadow-sm rounded-xl p-5">
+          <div class="text-xs font-medium text-gray-500">Gevolgde zoektermen</div>
+          <div id="category-keyword-count" class="mt-1 text-xl font-bold text-gray-900">–</div>
+        </div>
+      </div>
+
+      <p id="category-empty" class="hidden mt-6 bg-gray-50 border border-gray-200 text-gray-600 rounded-xl p-4 text-sm">
+        We volgen deze categorie nog niet actief. Zoek een specifiek product hierboven om de tracking te starten.
+      </p>
+
+      <div id="category-keywords-section" class="mt-8">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">Prijzen per zoekterm</h2>
+        <div id="category-keywords" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+      </div>
+
+      <div id="category-chart-section" class="hidden mt-8 bg-white border border-gray-200 shadow-sm rounded-xl p-5">
+        <div class="text-xs font-medium text-gray-500 mb-1">Prijstrend</div>
+        <p id="category-chart-caption" class="text-xs text-gray-400 mb-3"></p>
+        <canvas id="category-chart" height="90"></canvas>
+      </div>
+
+      <div id="category-deals-section" class="hidden mt-8">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">Beste deals in deze categorie</h2>
+        <div id="category-deals" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="bg-white border-t border-gray-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
+      <p>&copy; 2026 Productswaarde.nl</p>
+      <div class="flex gap-6">
+        <a href="deals.html" class="hover:text-emerald-600">Deals</a>
+        <a href="alerts.html" class="hover:text-emerald-600">Prijsalert</a>
+        <a href="privacy.html" class="hover:text-emerald-600">Privacybeleid</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="static/app.js"></script>
+</body>
+</html>

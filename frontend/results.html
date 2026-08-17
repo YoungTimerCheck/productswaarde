@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zoekresultaten | Productswaarde</title>
+  <meta name="description" content="Wat is een eerlijke prijs op Marktplaats? Bekijk de gemiddelde prijs en actuele aanbiedingen." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="static/style.css" />
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+
+  <header class="bg-white border-b border-gray-200">
+    <nav class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+      <a href="index.html" class="text-xl font-bold text-gray-900 shrink-0">
+        Products<span class="text-emerald-600">waarde</span>
+      </a>
+      <form id="search-form" class="hidden sm:flex flex-1 max-w-md">
+        <input
+          id="search-input"
+          type="text"
+          required
+          placeholder="Zoek een ander product..."
+          class="flex-1 rounded-l-lg border border-gray-200 px-4 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+        />
+        <button type="submit" class="rounded-r-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors">
+          Zoeken
+        </button>
+      </form>
+      <div class="flex items-center gap-4 sm:gap-6 text-sm font-medium text-gray-500 shrink-0">
+        <a href="deals.html" class="hover:text-emerald-600">Deals</a>
+        <a href="alerts.html" class="hover:text-emerald-600">Prijsalert</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="results-root" class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full">
+
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900">
+      <span id="results-keyword">...</span>
+    </h1>
+
+    <p id="results-loading" class="mt-6 text-gray-500">🔍 Even zoeken op Marktplaats...</p>
+
+    <p id="results-error" class="hidden mt-6 bg-red-50 border border-red-200 text-red-600 rounded-xl p-4 text-sm"></p>
+
+    <div id="results-content" class="hidden mt-6">
+
+      <p id="results-live-notice" class="hidden mb-6 bg-orange-50 border border-orange-200 text-orange-600 rounded-xl p-4 text-sm">
+        🆕 Nieuwe zoekopdracht — prijsgeschiedenis beschikbaar na 7 dagen tracking. Deal-scores hieronder zijn gebaseerd op de huidige advertenties.
+      </p>
+
+      <div id="results-stats-section" class="hidden">
+        <div class="grid sm:grid-cols-3 gap-4">
+          <div class="bg-white border border-gray-200 shadow-sm rounded-xl p-5">
+            <div class="text-xs font-medium text-gray-500">Gemiddelde prijs</div>
+            <div id="stat-avg-price" class="mt-1 text-xl font-bold text-gray-900">–</div>
+          </div>
+          <div class="bg-white border border-gray-200 shadow-sm rounded-xl p-5">
+            <div class="text-xs font-medium text-gray-500">Aantal gevolgd</div>
+            <div id="stat-active-listings" class="mt-1 text-xl font-bold text-gray-900">–</div>
+          </div>
+          <div class="bg-white border border-gray-200 shadow-sm rounded-xl p-5">
+            <div class="text-xs font-medium text-gray-500">Prijstrend (90 dagen)</div>
+            <div id="stat-trend" class="mt-1 text-xl font-bold text-gray-500">–</div>
+          </div>
+        </div>
+
+        <div class="mt-4 bg-white border border-gray-200 shadow-sm rounded-xl p-5">
+          <div class="text-xs font-medium text-gray-500 mb-3">Eerlijke prijsrange</div>
+          <div id="price-range-bar"></div>
+        </div>
+
+        <div id="best-moment" class="mt-4"></div>
+
+        <div id="price-chart-section" class="hidden mt-4 bg-white border border-gray-200 shadow-sm rounded-xl p-5">
+          <div class="text-xs font-medium text-gray-500 mb-3">Prijsverloop</div>
+          <canvas id="price-chart" height="90"></canvas>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <a id="alert-cta" href="alerts.html" class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors">
+          🔔 Stel prijsalert in
+        </a>
+      </div>
+
+      <div id="results-listings" class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    </div>
+
+  </main>
+
+  <footer class="bg-white border-t border-gray-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
+      <p>&copy; 2026 Productswaarde.nl</p>
+      <div class="flex gap-6">
+        <a href="deals.html" class="hover:text-emerald-600">Deals</a>
+        <a href="alerts.html" class="hover:text-emerald-600">Prijsalert</a>
+        <a href="privacy.html" class="hover:text-emerald-600">Privacybeleid</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="static/app.js"></script>
+</body>
+</html>

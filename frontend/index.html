@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Productswaarde — Eerlijke Prijscheck voor Marktplaats</title>
+  <meta name="description" content="Controleer of een Marktplaats advertentie een goede deal is. Bekijk prijsgeschiedenis, ontvang een melding bij een koopje." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="static/style.css" />
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+
+  <header class="bg-white border-b border-gray-200">
+    <nav class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+      <a href="index.html" class="text-xl font-bold text-gray-900">
+        Products<span class="text-emerald-600">waarde</span>
+      </a>
+      <div class="flex items-center gap-4 sm:gap-6 text-sm font-medium text-gray-500">
+        <a href="deals.html" class="hover:text-emerald-600">Deals</a>
+        <a href="alerts.html" class="hidden sm:inline hover:text-emerald-600">Prijsalert</a>
+        <a href="alerts.html" class="sm:hidden hover:text-emerald-600" aria-label="Prijsalert">Alert</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="flex-1">
+
+    <!-- Hero -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-12 pb-16 sm:pt-20 sm:pb-24">
+      <div class="text-center max-w-2xl mx-auto">
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900">
+          Wat is een eerlijke prijs?
+        </h1>
+        <p class="mt-3 text-gray-500 text-base sm:text-lg">
+          Vergelijk elke Marktplaats-advertentie met de actuele marktprijs voordat je koopt of verkoopt.
+        </p>
+      </div>
+
+      <div class="mt-10 max-w-2xl mx-auto grid gap-4">
+        <!-- Keyword search -->
+        <form id="search-form" class="bg-white border border-gray-200 shadow-sm rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row gap-3">
+          <label for="search-input" class="sr-only">Zoek een product</label>
+          <input
+            id="search-input"
+            type="text"
+            required
+            placeholder="Bijv. iphone 13, playstation 5, racefiets..."
+            class="flex-1 rounded-lg border border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+          />
+          <button
+            type="submit"
+            class="rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white hover:bg-emerald-700 transition-colors"
+          >
+            Zoeken
+          </button>
+        </form>
+
+        <!-- URL analysis -->
+        <form id="url-form" class="bg-white border border-gray-200 shadow-sm rounded-xl p-4 sm:p-5">
+          <div class="flex flex-col sm:flex-row gap-3">
+            <label for="url-input" class="sr-only">Plak een Marktplaats link</label>
+            <input
+              id="url-input"
+              type="text"
+              required
+              placeholder="Plak een Marktplaats link: https://www.marktplaats.nl/v/..."
+              class="flex-1 rounded-lg border border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            />
+            <button
+              type="submit"
+              class="rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white hover:bg-emerald-700 transition-colors"
+            >
+              Analyseer
+            </button>
+          </div>
+          <p id="url-error" class="hidden mt-2 text-sm text-red-500">
+            Plak een geldige Marktplaats advertentielink.
+          </p>
+        </form>
+
+        <p id="live-counter" class="w-fit flex items-center gap-2 mx-auto bg-white border border-gray-200 shadow-sm rounded-full px-5 py-2.5 text-sm font-medium text-gray-500">
+          <span aria-hidden="true">📊</span>
+          <span>Advertenties worden bijgehouden...</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- Popular categories -->
+    <section class="bg-white border-y border-gray-200">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-14">
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 text-center">Populaire categorieën</h2>
+        <div class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <a href="category.html?name=smartphones" class="group bg-white border border-gray-200 rounded-xl p-5 text-center shadow-sm hover:shadow-md hover:border-emerald-300 transition">
+            <div class="text-3xl">📱</div>
+            <div class="mt-2 text-sm font-semibold text-gray-900 group-hover:text-emerald-600">Smartphones</div>
+          </a>
+          <a href="category.html?name=laptops" class="group bg-white border border-gray-200 rounded-xl p-5 text-center shadow-sm hover:shadow-md hover:border-emerald-300 transition">
+            <div class="text-3xl">💻</div>
+            <div class="mt-2 text-sm font-semibold text-gray-900 group-hover:text-emerald-600">Laptops</div>
+          </a>
+          <a href="category.html?name=fietsen" class="group bg-white border border-gray-200 rounded-xl p-5 text-center shadow-sm hover:shadow-md hover:border-emerald-300 transition">
+            <div class="text-3xl">🚲</div>
+            <div class="mt-2 text-sm font-semibold text-gray-900 group-hover:text-emerald-600">Fietsen</div>
+          </a>
+          <a href="category.html?name=gaming" class="group bg-white border border-gray-200 rounded-xl p-5 text-center shadow-sm hover:shadow-md hover:border-emerald-300 transition">
+            <div class="text-3xl">🎮</div>
+            <div class="mt-2 text-sm font-semibold text-gray-900 group-hover:text-emerald-600">Gaming</div>
+          </a>
+          <a href="category.html?name=cameras" class="group bg-white border border-gray-200 rounded-xl p-5 text-center shadow-sm hover:shadow-md hover:border-emerald-300 transition">
+            <div class="text-3xl">📷</div>
+            <div class="mt-2 text-sm font-semibold text-gray-900 group-hover:text-emerald-600">Camera's</div>
+          </a>
+          <a href="category.html?name=meubels" class="group bg-white border border-gray-200 rounded-xl p-5 text-center shadow-sm hover:shadow-md hover:border-emerald-300 transition">
+            <div class="text-3xl">🛋️</div>
+            <div class="mt-2 text-sm font-semibold text-gray-900 group-hover:text-emerald-600">Meubels</div>
+          </a>
+          <a href="category.html?name=kleding" class="group bg-white border border-gray-200 rounded-xl p-5 text-center shadow-sm hover:shadow-md hover:border-emerald-300 transition">
+            <div class="text-3xl">👕</div>
+            <div class="mt-2 text-sm font-semibold text-gray-900 group-hover:text-emerald-600">Kleding</div>
+          </a>
+          <a href="category.html?name=autos" class="group bg-white border border-gray-200 rounded-xl p-5 text-center shadow-sm hover:shadow-md hover:border-emerald-300 transition">
+            <div class="text-3xl">🚗</div>
+            <div class="mt-2 text-sm font-semibold text-gray-900 group-hover:text-emerald-600">Auto's</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+      <h2 class="text-xl sm:text-2xl font-bold text-gray-900 text-center">Zo werkt het</h2>
+      <div class="mt-10 grid sm:grid-cols-3 gap-6">
+        <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 text-center">
+          <div class="mx-auto h-10 w-10 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center">1</div>
+          <h3 class="mt-4 font-semibold text-gray-900">Zoek of plak een link</h3>
+          <p class="mt-2 text-sm text-gray-500">Voer een product in of plak de link van een Marktplaats-advertentie.</p>
+        </div>
+        <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 text-center">
+          <div class="mx-auto h-10 w-10 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center">2</div>
+          <h3 class="mt-4 font-semibold text-gray-900">Wij vergelijken de markt</h3>
+          <p class="mt-2 text-sm text-gray-500">We toetsen de prijs aan honderden vergelijkbare advertenties.</p>
+        </div>
+        <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 text-center">
+          <div class="mx-auto h-10 w-10 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center">3</div>
+          <h3 class="mt-4 font-semibold text-gray-900">Zie of het een goede deal is</h3>
+          <p class="mt-2 text-sm text-gray-500">Direct een duidelijke deal-score: goede deal, gemiddeld of te duur.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-white border-t border-gray-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
+      <p>&copy; 2026 Productswaarde.nl</p>
+      <div class="flex gap-6">
+        <a href="deals.html" class="hover:text-emerald-600">Deals</a>
+        <a href="alerts.html" class="hover:text-emerald-600">Prijsalert</a>
+        <a href="privacy.html" class="hover:text-emerald-600">Privacybeleid</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="static/app.js"></script>
+</body>
+</html>

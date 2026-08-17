@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beste deals vandaag | Productswaarde</title>
+  <meta name="description" content="De beste deal-scores op Marktplaats vandaag, over alle categorieën." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="static/style.css" />
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+
+  <header class="bg-white border-b border-gray-200">
+    <nav class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+      <a href="index.html" class="text-xl font-bold text-gray-900 shrink-0">
+        Products<span class="text-emerald-600">waarde</span>
+      </a>
+      <form id="search-form" class="hidden sm:flex flex-1 max-w-md">
+        <input
+          id="search-input"
+          type="text"
+          required
+          placeholder="Zoek een product..."
+          class="flex-1 rounded-l-lg border border-gray-200 px-4 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+        />
+        <button type="submit" class="rounded-r-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors">
+          Zoeken
+        </button>
+      </form>
+      <div class="flex items-center gap-4 sm:gap-6 text-sm font-medium text-gray-500 shrink-0">
+        <a href="deals.html" class="text-emerald-600">Deals</a>
+        <a href="alerts.html" class="hover:text-emerald-600">Prijsalert</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="deals-root" class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full">
+
+    <div class="flex flex-wrap items-baseline justify-between gap-2">
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900">🔥 Beste deals vandaag</h1>
+      <p id="deals-updated" class="text-sm text-gray-500"></p>
+    </div>
+    <p class="mt-1 text-gray-500 text-sm">De grootste prijsverschillen ten opzichte van de marktmediaan, over alle categorieën.</p>
+
+    <p id="deals-loading" class="mt-6 text-gray-500">🔍 Deals worden geladen...</p>
+
+    <p id="deals-error" class="hidden mt-6 bg-red-50 border border-red-200 text-red-600 rounded-xl p-4 text-sm"></p>
+
+    <p id="deals-empty" class="hidden mt-6 bg-gray-50 border border-gray-200 text-gray-600 rounded-xl p-4 text-sm">
+      Nog geen betrouwbare deals gevonden. Kom later terug.
+    </p>
+
+    <div id="deals-content" class="hidden mt-6">
+      <div id="deals-filters" class="flex flex-wrap gap-2"></div>
+
+      <p id="deals-empty-filtered" class="hidden mt-6 text-sm text-gray-500">
+        Geen deals in deze categorie.
+      </p>
+
+      <div id="deals-grid" class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    </div>
+
+  </main>
+
+  <footer class="bg-white border-t border-gray-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
+      <p>&copy; 2026 Productswaarde.nl</p>
+      <div class="flex gap-6">
+        <a href="deals.html" class="hover:text-emerald-600">Deals</a>
+        <a href="alerts.html" class="hover:text-emerald-600">Prijsalert</a>
+        <a href="privacy.html" class="hover:text-emerald-600">Privacybeleid</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="static/app.js"></script>
+</body>
+</html>
