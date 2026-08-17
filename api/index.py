@@ -1,8 +1,11 @@
 import os
 import sys
+from urllib.parse import quote
+from xml.sax.saxutils import escape
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
+from fastapi.responses import PlainTextResponse, Response
 from fastapi.staticfiles import StaticFiles
 from supabase import Client, create_client
 
@@ -37,6 +40,43 @@ def health():
             supabase_status = "error"
 
     return {"status": "ok", "supabase": supabase_status}
+
+
+CATEGORY_SLUGS = ["smartphones", "laptops", "fietsen", "gaming", "cameras", "meubels", "kleding", "autos"]
+
+
+@app.get("/robots.txt", response_class=PlainTextResponse)
+def robots_txt():
+    base_url = os.environ.get("BASE_URL", "https://productswaarde.nl")
+    return f"User-agent: *\nAllow: /\n\nSitemap: {base_url}/sitemap.xml\n"
+
+
+@app.get("/sitemap.xml")
+def sitemap_xml():
+    base_url = os.environ.get("BASE_URL", "https://productswaarde.nl")
+
+    urls = [f"{base_url}/", f"{base_url}/deals.html", f"{base_url}/alerts.html", f"{base_url}/privacy.html"]
+    urls += [f"{base_url}/category.html?name={slug}" for slug in CATEGORY_SLUGS]
+
+    if supabase is not None:
+        try:
+            rows = (
+                supabase.table("keyword_stats")
+                .select("keyword, active_listings")
+                .order("active_listings", desc=True)
+                .limit(30)
+                .execute()
+                .data
+            )
+            urls += [f"{base_url}/results.html?q={quote(row['keyword'])}" for row in rows]
+        except Exception:
+            pass
+
+    body = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    body += [f"  <url><loc>{escape(url)}</loc></url>" for url in urls]
+    body.append("</urlset>")
+
+    return Response(content="\n".join(body), media_type="application/xml")
 
 
 # Local-dev convenience only: Vercel serves frontend/** as static files directly

@@ -70,6 +70,16 @@ function escapeHTML(str) {
   return div.innerHTML;
 }
 
+function setMetaDescription(text) {
+  let tag = document.querySelector('meta[name="description"]');
+  if (!tag) {
+    tag = document.createElement("meta");
+    tag.setAttribute("name", "description");
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute("content", text);
+}
+
 function formatEUR(value) {
   if (value === null || value === undefined) return null;
   return new Intl.NumberFormat("nl-NL", {
@@ -178,6 +188,7 @@ async function initResultsPage() {
 
   document.getElementById("results-keyword").textContent = keyword;
   document.title = `${keyword} prijs Marktplaats | Productswaarde`;
+  setMetaDescription(`Wat is een eerlijke prijs voor ${keyword} op Marktplaats? Bekijk de gemiddelde prijs en actuele aanbiedingen.`);
 
   let data;
   try {
@@ -431,6 +442,41 @@ function renderListingDetail(listing) {
 
   const cta = document.getElementById("listing-cta");
   cta.href = listing.url;
+
+  injectListingJsonLd(listing);
+}
+
+function schemaCondition(condition) {
+  const c = (condition || "").toLowerCase();
+  if (c === "nieuw") return "https://schema.org/NewCondition";
+  if (c.includes("refurbished")) return "https://schema.org/RefurbishedCondition";
+  if (c.includes("defect") || c.includes("beschadigd")) return "https://schema.org/DamagedCondition";
+  return "https://schema.org/UsedCondition";
+}
+
+function injectListingJsonLd(listing) {
+  document.getElementById("listing-jsonld")?.remove();
+
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: listing.title,
+    ...(listing.image_url ? { image: [listing.image_url] } : {}),
+    ...(listing.condition ? { itemCondition: schemaCondition(listing.condition) } : {}),
+    offers: {
+      "@type": "Offer",
+      url: listing.url,
+      priceCurrency: "EUR",
+      price: listing.price ?? 0,
+      availability: "https://schema.org/InStock",
+    },
+  };
+
+  const script = document.createElement("script");
+  script.type = "application/ld+json";
+  script.id = "listing-jsonld";
+  script.textContent = JSON.stringify(data);
+  document.head.appendChild(script);
 }
 
 async function initListingPage() {
@@ -677,6 +723,7 @@ async function initCategoryPage() {
   document.getElementById("category-icon").textContent = meta.icon;
   document.getElementById("category-name").textContent = meta.label;
   document.title = `${meta.label} tweedehands prijzen | Productswaarde`;
+  setMetaDescription(`Wat zijn eerlijke prijzen voor ${meta.label} op Marktplaats? Bekijk trends en actuele deals.`);
 
   let categoriesData, dealsData;
   try {
@@ -758,6 +805,30 @@ async function initCategoryPage() {
   }
 }
 
+function initCookieBanner() {
+  if (localStorage.getItem("cookieNoticeDismissed") === "true") return;
+
+  const banner = document.createElement("div");
+  banner.id = "cookie-banner";
+  banner.className = "fixed inset-x-0 bottom-0 z-50 bg-white border-t border-gray-200 shadow-lg px-4 py-4 sm:px-6";
+  banner.innerHTML = `
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
+      <p class="text-sm text-gray-600 flex-1">
+        Deze website gebruikt cookies voor analytische doeleinden. Door verder te gaan ga je akkoord.
+        <a href="privacy.html" class="text-emerald-600 hover:underline">Meer info</a>.
+      </p>
+      <button id="cookie-accept" type="button" class="shrink-0 rounded-lg bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors">
+        Accepteren
+      </button>
+    </div>`;
+  document.body.appendChild(banner);
+
+  document.getElementById("cookie-accept").addEventListener("click", () => {
+    localStorage.setItem("cookieNoticeDismissed", "true");
+    banner.remove();
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initHomeSearch();
   loadLiveCounter();
@@ -766,4 +837,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initDealsPage();
   initAlertsPage();
   initCategoryPage();
+  initCookieBanner();
 });
