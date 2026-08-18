@@ -51,13 +51,22 @@ def resolve_keywords() -> list[str]:
     return sorted(set(DEFAULT_KEYWORDS) | set(get_queue_keywords()))
 
 
+def get_batch(keywords: list[str], batch: int, total_batches: int = 4) -> list[str]:
+    """Deterministically split keywords into `total_batches` groups by sorted position,
+    so a given keyword always lands in the same batch run-to-run (a Python hash() isn't
+    stable across processes, so index-modulo on a sorted list is used instead).
+    """
+    sorted_keywords = sorted(keywords)
+    return [kw for i, kw in enumerate(sorted_keywords) if i % total_batches == (batch - 1)]
+
+
 def run(keywords: list[str]) -> None:
     now = datetime.now(timezone.utc).isoformat()
 
     for i, keyword in enumerate(keywords):
         print(f"Scraping '{keyword}'...")
         try:
-            listings = scrape_marktplaats(keyword, pages=3)
+            listings = scrape_marktplaats(keyword)
             result = store_listings(keyword, listings)
             print(
                 f"  fetched {result['fetched']} | "
@@ -71,8 +80,15 @@ def run(keywords: list[str]) -> None:
             print(f"  error scraping '{keyword}': {exc}")
 
         if i < len(keywords) - 1:
-            time.sleep(random.uniform(2, 3))
+            time.sleep(random.uniform(3, 5))
 
 
 if __name__ == "__main__":
-    run(sys.argv[1:] or resolve_keywords())
+    args = sys.argv[1:]
+    if args and args[0] == "--batch":
+        batch_number = int(args[1])
+        batch_keywords = get_batch(resolve_keywords(), batch_number)
+        print(f"Running batch {batch_number}/4 ({len(batch_keywords)} keywords)")
+        run(batch_keywords)
+    else:
+        run(args or resolve_keywords())

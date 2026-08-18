@@ -1,12 +1,24 @@
 name: Marktplaats scraper
 
+# Runs every hour, each hour handling one of 4 rotating ~20-keyword batches, so every
+# keyword still refreshes every 4 hours overall - just spread across 4 smaller runs
+# instead of one big one. A single run scraping all ~80 keywords at once (even at just
+# 1 page each) pushed us over Marktplaats' bot-detection threshold and got the GitHub
+# Actions runner's IP hard-blocked (403) partway through.
 on:
   schedule:
-    - cron: '0 */4 * * *'
+    - cron: '0 */4 * * *'      # batch 1: 00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UTC
+    - cron: '0 1-23/4 * * *'   # batch 2: 01:00, 05:00, 09:00, 13:00, 17:00, 21:00 UTC
+    - cron: '0 2-23/4 * * *'   # batch 3: 02:00, 06:00, 10:00, 14:00, 18:00, 22:00 UTC
+    - cron: '0 3-23/4 * * *'   # batch 4: 03:00, 07:00, 11:00, 15:00, 19:00, 23:00 UTC
   workflow_dispatch:
     inputs:
       keyword:
         description: 'Optioneel: scrape alleen dit keyword (voor testen)'
+        required: false
+        default: ''
+      batch:
+        description: 'Optioneel: forceer een specifieke batch (1-4)'
         required: false
         default: ''
 
@@ -26,6 +38,22 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Determine batch number
+        id: batch
+        run: |
+          SCHEDULE="${{ github.event.schedule }}"
+          if [ "$SCHEDULE" = "0 */4 * * *" ]; then
+            echo "number=1" >> "$GITHUB_OUTPUT"
+          elif [ "$SCHEDULE" = "0 1-23/4 * * *" ]; then
+            echo "number=2" >> "$GITHUB_OUTPUT"
+          elif [ "$SCHEDULE" = "0 2-23/4 * * *" ]; then
+            echo "number=3" >> "$GITHUB_OUTPUT"
+          elif [ "$SCHEDULE" = "0 3-23/4 * * *" ]; then
+            echo "number=4" >> "$GITHUB_OUTPUT"
+          else
+            echo "number=${{ github.event.inputs.batch }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Run scraper
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -38,6 +66,8 @@ jobs:
         run: |
           if [ -n "${{ github.event.inputs.keyword }}" ]; then
             python scraper/run.py "${{ github.event.inputs.keyword }}"
+          elif [ -n "${{ steps.batch.outputs.number }}" ]; then
+            python scraper/run.py --batch "${{ steps.batch.outputs.number }}"
           else
             python scraper/run.py
           fi
